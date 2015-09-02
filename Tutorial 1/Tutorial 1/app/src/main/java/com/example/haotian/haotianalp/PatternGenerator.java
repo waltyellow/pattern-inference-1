@@ -29,6 +29,8 @@ public class PatternGenerator
     protected int mMaxNodes;
     protected Random mRng;
     protected List<Point> mAllNodes;
+    // Used nodes array
+    protected boolean[][] usedNodes = new boolean[3][3];
 
     public PatternGenerator()
     {
@@ -36,13 +38,39 @@ public class PatternGenerator
         setGridLength(0);
         setMinNodes(0);
         setMaxNodes(0);
+        mAllNodes = new ArrayList<Point>();
+       // Add initial point
+        mAllNodes.add(pointGenerator());
+        usedNodes[mAllNodes.get(0).x][mAllNodes.get(0).y] = true;
+        int pCount = 1;
+        // Determine pattern length
+        int length = 3 + mRng.nextInt(3);
+        while(pCount < length){
+            Point currentPoint = mAllNodes.get(pCount - 1);
+            Point candidatePoint = pointGenerator();
+            // not finished
+        }
+    }
+
+
+    private boolean testCandidate(Point currentPoint, Point candidatePoint)
+    {
+        if(usedNodes[candidatePoint.x][candidatePoint.y] = true)
+            return false;
+        // not finished
+        return true;
+    }
+
+    private Point pointGenerator()
+    {
+        Point point = new Point(mRng.nextInt(3), mRng.nextInt(3));
+        return point;
     }
 
     public List<Point> getPattern()
     {
         List<Point> pattern = new ArrayList<Point>();
-        //.....
-        //.....
+
         return pattern;
     }
 
