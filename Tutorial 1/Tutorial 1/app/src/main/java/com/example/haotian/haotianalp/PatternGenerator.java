@@ -48,16 +48,23 @@ public class PatternGenerator
         while(pCount < length){
             Point currentPoint = mAllNodes.get(pCount - 1);
             Point candidatePoint = pointGenerator();
-            // not finished
+            if(testCandidate(currentPoint, candidatePoint) == true){
+                mAllNodes.add(pCount, candidatePoint);
+                usedNodes[candidatePoint.x][candidatePoint.y] = true;
+                pCount++;
+            }
         }
     }
 
 
     private boolean testCandidate(Point currentPoint, Point candidatePoint)
     {
-        if(usedNodes[candidatePoint.x][candidatePoint.y] = true)
+        if(usedNodes[candidatePoint.x][candidatePoint.y] == true)
             return false;
-        // not finished
+        if(Math.abs(candidatePoint.x - currentPoint.x) > 1)
+            return false;
+        if(Math.abs(candidatePoint.y - currentPoint.y) > 1)
+            return false;
         return true;
     }
 
