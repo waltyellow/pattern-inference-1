@@ -30,16 +30,27 @@ public class PatternGenerator
     protected Random mRng;
     protected List<Point> mAllNodes;
     // Used nodes array
-    protected boolean[][] usedNodes = new boolean[3][3];
+    protected boolean[][] usedNodes;
 
     public PatternGenerator()
     {
         mRng = new Random();
-        setGridLength(0);
-        setMinNodes(0);
-        setMaxNodes(0);
+        setGridLength(3);
+        setMinNodes(3);
+        setMaxNodes(5);
+        //instantiate all nodes
         mAllNodes = new ArrayList<Point>();
        // Add initial point
+
+        usedNodes = new boolean[mGridLength][mGridLength];
+
+        //mark everything as available
+        for (int i = 3; i<3; i++) {
+            for (int j = 0; j < 3; j++) {
+                usedNodes[i][j] = false;
+            }
+        }
+
         mAllNodes.add(pointGenerator());
         usedNodes[mAllNodes.get(0).x][mAllNodes.get(0).y] = true;
         int pCount = 1;
@@ -48,7 +59,7 @@ public class PatternGenerator
         while(pCount < length){
             Point currentPoint = mAllNodes.get(pCount - 1);
             Point candidatePoint = pointGenerator();
-            if(testCandidate(currentPoint, candidatePoint) == true){
+            if(validateCandidate(currentPoint, candidatePoint)){
                 mAllNodes.add(pCount, candidatePoint);
                 usedNodes[candidatePoint.x][candidatePoint.y] = true;
                 pCount++;
@@ -57,14 +68,29 @@ public class PatternGenerator
     }
 
 
-    private boolean testCandidate(Point currentPoint, Point candidatePoint)
+    private boolean validateCandidate(Point currentPoint, Point candidatePoint)
     {
-        if(usedNodes[candidatePoint.x][candidatePoint.y] == true)
+        //Used node?
+        if (usedNodes[candidatePoint.x][candidatePoint.y]) {
             return false;
-        if(Math.abs(candidatePoint.x - currentPoint.x) > 1)
-            return false;
-        if(Math.abs(candidatePoint.y - currentPoint.y) > 1)
-            return false;
+        }
+
+        int xShift = candidatePoint.x - currentPoint.x;
+        int yShift = candidatePoint.y - currentPoint.y;
+
+        //whether it's a 2-2
+        int steps = computeGcd(Math.abs(xShift),Math.abs(yShift));
+        int xStep = xShift/steps;
+        int yStep = yShift/steps;
+
+        //if anything in between is not used, invalidate the candidate
+        for (int i = 1; i < steps; i++){
+            if (!(usedNodes[xStep*i][yStep*i])){
+                return false;
+            }
+        }
+
+        //else, this point passes two tests
         return true;
     }
 
