@@ -70,8 +70,6 @@ public class ALPActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         mGenerator = new PatternGenerator();
@@ -105,7 +103,6 @@ public class ALPActivity extends Activity {
                             (d = (int)(d* 1.2)));}
                 return true;
             }
-
         });
 
         mPracticeToggle.setOnCheckedChangeListener(

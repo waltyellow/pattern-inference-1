@@ -197,9 +197,11 @@ public class LockPatternView extends View
         {
             mode = mPracticeSuccessMode;
             testResult = "true";
+            // do the save
         }
         else{
             testResult = "false";
+            //do the clear
         }
         loadPattern(mPracticePattern, mode);
         // clear the result display after a delay
@@ -273,6 +275,11 @@ public class LockPatternView extends View
         {
             return super.onTouchEvent(event);
         }
+
+        //retrieve touch data (2)
+        //retrieve all sensors (3)
+        //saving into a buffer
+        //saving into a file (on touch ending)
         switch(event.getAction())
         {
             case MotionEvent.ACTION_DOWN:
@@ -342,6 +349,7 @@ public class LockPatternView extends View
             case MotionEvent.ACTION_UP:
                 mDrawTouchExtension = false;
                 testPracticePattern();
+                //also test for whether we should save the buffer to file.
                 break;
             default:
                 return super.onTouchEvent(event);
