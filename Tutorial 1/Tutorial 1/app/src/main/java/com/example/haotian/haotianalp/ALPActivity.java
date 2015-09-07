@@ -75,13 +75,38 @@ public class ALPActivity extends Activity {
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         mGenerator = new PatternGenerator();
-
         setContentView(R.layout.activity_alp);
         mPatternView = (LockPatternView) findViewById(R.id.pattern_view);
         mGenerateButton = (Button) findViewById(R.id.generate_button);
-
         mPracticeToggle = (ToggleButton) findViewById(R.id.practice_toggle);
 
+        mGenerateButton.setOnClickListener(new Button.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                mPatternView.setPattern(mGenerator.getPattern());
+                mPatternView.invalidate();
+            }
+
+        });
+
+        mGenerateButton.setOnLongClickListener(new Button.OnLongClickListener(){
+
+            public boolean onLongClick(View v){
+                int d = 90;
+                for (int i = 1; i<20; i ++){
+                    new android.os.Handler().postDelayed(
+                            new Runnable() {
+                                public void run() {
+                                    mPatternView.setPattern(mGenerator.getPattern());
+                                    mPatternView.invalidate();;
+                                }
+                            },
+                            (d = (int)(d* 1.2)));}
+                return true;
+            }
+
+        });
 
         mPracticeToggle.setOnCheckedChangeListener(
                 new ToggleButton.OnCheckedChangeListener() {

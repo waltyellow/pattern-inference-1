@@ -35,42 +35,15 @@ public class PatternGenerator
     public PatternGenerator()
     {
         mRng = new Random();
-        setGridLength(3);
-        setMinNodes(3);
-        setMaxNodes(5);
-        //instantiate all nodes
-        mAllNodes = new ArrayList<Point>();
-       // Add initial point
-
-        usedNodes = new boolean[mGridLength][mGridLength];
-
-        //mark everything as available
-        for (int i = 3; i<3; i++) {
-            for (int j = 0; j < 3; j++) {
-                usedNodes[i][j] = false;
-            }
-        }
-
-        mAllNodes.add(pointGenerator());
-        usedNodes[mAllNodes.get(0).x][mAllNodes.get(0).y] = true;
-        int pCount = 1;
-        // Determine pattern length
-        int length = 3 + mRng.nextInt(3);
-        while(pCount < length){
-            Point currentPoint = mAllNodes.get(pCount - 1);
-            Point candidatePoint = pointGenerator();
-            if(validateCandidate(currentPoint, candidatePoint)){
-                mAllNodes.add(pCount, candidatePoint);
-                usedNodes[candidatePoint.x][candidatePoint.y] = true;
-                pCount++;
-            }
-        }
+        setGridLength(0);
+        setMinNodes(0);
+        setMaxNodes(0);
     }
 
 
     private boolean validateCandidate(Point currentPoint, Point candidatePoint)
     {
-        //Used node?
+        // Is it a used node?
         if (usedNodes[candidatePoint.x][candidatePoint.y]) {
             return false;
         }
@@ -85,7 +58,7 @@ public class PatternGenerator
 
         //if anything in between is not used, invalidate the candidate
         for (int i = 1; i < steps; i++){
-            if (!(usedNodes[xStep*i][yStep*i])){
+            if (!(usedNodes[currentPoint.x+xStep*i][currentPoint.y+yStep*i])){
                 return false;
             }
         }
@@ -102,9 +75,38 @@ public class PatternGenerator
 
     public List<Point> getPattern()
     {
-        List<Point> pattern = new ArrayList<Point>();
+        // Instantiate list for nodes
+        mAllNodes = new ArrayList<Point>();
 
-        return pattern;
+        // Maps used nodes
+        usedNodes = new boolean[mGridLength][mGridLength];
+
+        // Mark everything as available
+        for (int i = 3; i<3; i++) {
+            for (int j = 0; j < 3; j++) {
+                usedNodes[i][j] = false;
+            }
+        }
+
+        // Add initial point
+        mAllNodes.add(pointGenerator());
+        usedNodes[mAllNodes.get(0).x][mAllNodes.get(0).y] = true;
+        int pCount = 1;
+        // Determine pattern length
+        int length = 3 + mRng.nextInt(3);
+
+        // Generate other pattern nodes
+        while(pCount < length){
+            Point currentPoint = mAllNodes.get(pCount - 1);
+            Point candidatePoint = pointGenerator();
+            if(validateCandidate(currentPoint, candidatePoint)){
+                mAllNodes.add(pCount, candidatePoint);
+                usedNodes[candidatePoint.x][candidatePoint.y] = true;
+                pCount++;
+            }
+        }
+
+        return mAllNodes;
     }
 
     //
