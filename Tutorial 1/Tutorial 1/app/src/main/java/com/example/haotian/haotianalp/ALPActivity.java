@@ -112,11 +112,16 @@ public class ALPActivity extends Activity {
                 new ToggleButton.OnCheckedChangeListener() {
                     public void onCheckedChanged(CompoundButton buttonView,
                                                  boolean isChecked) {
-
-
+                        if(isChecked){
+                            mGenerateButton.setEnabled(false);
+                            mPatternView.setPracticeMode(true);
+                        }
+                        else{
+                            mGenerateButton.setEnabled(true);
+                            mPatternView.setPracticeMode(false);
+                        }
                     }
                 });
-
     }
 
     @Override
