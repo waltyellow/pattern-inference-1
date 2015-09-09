@@ -280,6 +280,7 @@ public class LockPatternView extends View
         //retrieve all sensors (3)
         //saving into a buffer
         //saving into a file (on touch ending)
+
         switch(event.getAction())
         {
             case MotionEvent.ACTION_DOWN:

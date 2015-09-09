@@ -26,6 +26,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.text.DateFormat;
@@ -77,6 +78,19 @@ public class ALPActivity extends Activity {
         mPatternView = (LockPatternView) findViewById(R.id.pattern_view);
         mGenerateButton = (Button) findViewById(R.id.generate_button);
         mPracticeToggle = (ToggleButton) findViewById(R.id.practice_toggle);
+
+        // create file for which to save motion data
+        String root = Environment.getExternalStorageDirectory().toString();
+        file = new File(root = "/DCIM", "motiondata.csv");
+
+        // create BufferedWriter
+        try {
+            bufferedWriter = new BufferedWriter(new FileWriter(file));
+            bufferedWriter.write("position_X,position_Y,velocity_X,velocity_Y,pressure,size\n");
+        }
+        catch(Exception e){
+            System.out.println(e.toString());
+        }
 
         mGenerateButton.setOnClickListener(new Button.OnClickListener(){
 
@@ -158,6 +172,26 @@ public class ALPActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    // test file saving method
+    public void saveMotionData(String[] data)
+    {
+        for(int i = 0; i < 6; i++){
+            try {
+                bufferedWriter.write(data[i]);
+            }
+            catch(Exception e){
+                System.out.println(e.toString());
+            }
+        }
+
+        try{
+            bufferedWriter.write("\n");
+        }
+        catch(Exception e){
+            System.out.println(e.toString());
+        }
     }
 
     private void updateFromPrefs()
