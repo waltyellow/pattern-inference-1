@@ -72,6 +72,7 @@ public class LockPatternView extends View
     protected List<Point> mCurrentPattern;
     protected List<Point> mPracticePattern;
     protected Set<Point> mPracticePool;
+    protected ArrayList<String> motionData;
 
     public LockPatternView(Context context, AttributeSet attrs)
     {
@@ -96,6 +97,7 @@ public class LockPatternView extends View
         mEdgePaint.setColor(EDGE_COLOR);
         mEdgePaint.setStrokeCap(Paint.Cap.ROUND);
         mEdgePaint.setFlags(Paint.ANTI_ALIAS_FLAG);
+        mVelocityTracker = VelocityTracker.obtain();
 
         testResult = "false";
     }
@@ -289,6 +291,10 @@ public class LockPatternView extends View
                     resetPractice();
                 }
                 mDrawTouchExtension = true;
+                if(mPracticeMode){
+                    motionData = new ArrayList<String>();
+                }
+
             case MotionEvent.ACTION_MOVE:
                 float x = event.getX(), y = event.getY();
                 mTouchPoint.x = (int) x;
@@ -346,11 +352,30 @@ public class LockPatternView extends View
                     appendPattern(mPracticePattern, newPoint);
                     mPracticePool.add(newPoint);
                 }
+
+                // capture the motion data
+                if(mPracticeMode){
+                    mVelocityTracker.addMovement(event);
+                    // pixels per 10 millisecond
+                    mVelocityTracker.computeCurrentVelocity(10);
+                    String row = "";
+                    row = row +event.getX()+",";
+                    row = row +event.getY()+",";
+                    row = row + mVelocityTracker.getXVelocity()+",";
+                    row = row + mVelocityTracker.getYVelocity()+",";
+                    row = row +event.getPressure()+",";
+                    row = row +event.getSize();
+                    row = row +"\n";
+                    motionData.add(row);
+                }
                 break;
             case MotionEvent.ACTION_UP:
                 mDrawTouchExtension = false;
                 testPracticePattern();
                 //also test for whether we should save the buffer to file.
+                if(testResult.equals("true")){
+                    ((ALPActivity)(this.getContext())).saveMotionData(motionData);
+                }
                 break;
             default:
                 return super.onTouchEvent(event);
@@ -389,7 +414,7 @@ public class LockPatternView extends View
             length = Math.min(width,height);
         }
 
-        setMeasuredDimension(length,length);
+        setMeasuredDimension(length, length);
     }
 
     // update draw values dependent on view size so it doesn't have to happen

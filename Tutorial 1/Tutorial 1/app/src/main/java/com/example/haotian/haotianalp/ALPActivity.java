@@ -33,6 +33,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -81,15 +82,17 @@ public class ALPActivity extends Activity {
 
         // create file for which to save motion data
         String root = Environment.getExternalStorageDirectory().toString();
-        file = new File(root = "/DCIM", "motiondata.csv");
+        file = new File(root + "/DCIM", "motiondata" + System.currentTimeMillis() + ".csv");
 
         // create BufferedWriter
         try {
             bufferedWriter = new BufferedWriter(new FileWriter(file));
             bufferedWriter.write("position_X,position_Y,velocity_X,velocity_Y,pressure,size\n");
+            bufferedWriter.flush();
         }
         catch(Exception e){
             System.out.println(e.toString());
+            System.out.println("bw error");
         }
 
         mGenerateButton.setOnClickListener(new Button.OnClickListener(){
@@ -175,11 +178,11 @@ public class ALPActivity extends Activity {
     }
 
     // test file saving method
-    public void saveMotionData(String[] data)
+    public void saveMotionData(ArrayList<String> data)
     {
-        for(int i = 0; i < 6; i++){
+        for(int i = 0; i < data.size(); i++){
             try {
-                bufferedWriter.write(data[i]);
+                bufferedWriter.write(data.get(i));
             }
             catch(Exception e){
                 System.out.println(e.toString());
@@ -187,7 +190,7 @@ public class ALPActivity extends Activity {
         }
 
         try{
-            bufferedWriter.write("\n");
+            bufferedWriter.flush();
         }
         catch(Exception e){
             System.out.println(e.toString());
