@@ -354,11 +354,44 @@ public class LockPatternView extends View
                 }
 
                 // capture the motion data
+
+                // timestamp (format)
+                // recall what point we are at
+                // what correct pattern is
+                // which try it is
+                // close buffer somewhere
+                // accelerometer (xyz)
+                // magnetic field (xyz)
+                // gyroscope (xyz)
+                // rotations (xyz)
+                // linear acceleration (xyz)
+                // gravity (xyz)
+
+
                 if(mPracticeMode){
                     mVelocityTracker.addMovement(event);
                     // pixels per 10 millisecond
                     mVelocityTracker.computeCurrentVelocity(10);
                     String row = "";
+                    row = row +System.currentTimeMillis()+",";
+                    row = row +((ALPActivity)(this.getContext())).accelerometer_x+",";
+                    row = row +((ALPActivity)(this.getContext())).accelerometer_y+",";
+                    row = row +((ALPActivity)(this.getContext())).accelerometer_z+",";
+                    row = row +((ALPActivity)(this.getContext())).magnetic_field_x+",";
+                    row = row +((ALPActivity)(this.getContext())).magnetic_field_y+",";
+                    row = row +((ALPActivity)(this.getContext())).magnetic_field_z+",";
+                    row = row +((ALPActivity)(this.getContext())).gyroscope_x+",";
+                    row = row +((ALPActivity)(this.getContext())).gyroscope_y+",";
+                    row = row +((ALPActivity)(this.getContext())).gyroscope_z+",";
+                    row = row +((ALPActivity)(this.getContext())).rotation_vector_x+",";
+                    row = row +((ALPActivity)(this.getContext())).rotation_vector_y+",";
+                    row = row +((ALPActivity)(this.getContext())).rotation_vector_z+",";
+                    row = row +((ALPActivity)(this.getContext())).linear_acceleration_x+",";
+                    row = row +((ALPActivity)(this.getContext())).linear_acceleration_y+",";
+                    row = row +((ALPActivity)(this.getContext())).linear_acceleration_z+",";
+                    row = row +((ALPActivity)(this.getContext())).gravity_x+",";
+                    row = row +((ALPActivity)(this.getContext())).gravity_y+",";
+                    row = row +((ALPActivity)(this.getContext())).gravity_z+",";
                     row = row +event.getX()+",";
                     row = row +event.getY()+",";
                     row = row + mVelocityTracker.getXVelocity()+",";

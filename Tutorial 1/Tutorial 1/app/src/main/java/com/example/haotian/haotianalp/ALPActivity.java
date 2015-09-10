@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Locale;
 
 
-public class ALPActivity extends Activity {
+public class ALPActivity extends Activity implements SensorEventListener{
     protected LockPatternView mPatternView;
     protected PatternGenerator mGenerator;
     protected Button mGenerateButton;
@@ -52,6 +52,25 @@ public class ALPActivity extends Activity {
     protected int mPatternMax=0;
     protected String mHighlightMode;
     protected boolean mTactileFeedback;
+    // Sensor data storage
+    protected float accelerometer_x = 0;
+    protected float accelerometer_y = 0;
+    protected float accelerometer_z = 0;
+    protected float magnetic_field_x = 0;
+    protected float magnetic_field_y = 0;
+    protected float magnetic_field_z = 0;
+    protected float gyroscope_x = 0;
+    protected float gyroscope_y = 0;
+    protected float gyroscope_z = 0;
+    protected float rotation_vector_x = 0;
+    protected float rotation_vector_y = 0;
+    protected float rotation_vector_z = 0;
+    protected float linear_acceleration_x = 0;
+    protected float linear_acceleration_y = 0;
+    protected float linear_acceleration_z = 0;
+    protected float gravity_x = 0;
+    protected float gravity_y = 0;
+    protected float gravity_z = 0;
 
     private static final String TAG = "SensorActivity";
     private static final String TAGmotion = "motionEvent";
@@ -74,6 +93,14 @@ public class ALPActivity extends Activity {
         super.onCreate(savedInstanceState);
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mMagnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        mGyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        mRotation = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+        mGravity = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+        myLinearAcc = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+
         mGenerator = new PatternGenerator();
         setContentView(R.layout.activity_alp);
         mPatternView = (LockPatternView) findViewById(R.id.pattern_view);
@@ -87,7 +114,12 @@ public class ALPActivity extends Activity {
         // create BufferedWriter
         try {
             bufferedWriter = new BufferedWriter(new FileWriter(file));
-            bufferedWriter.write("position_X,position_Y,velocity_X,velocity_Y,pressure,size\n");
+            bufferedWriter.write("TimeStamp,TYPE_ACCELEROMETER_X,TYPE_ACCELEROMETER_Y," +
+                    "TYPE_ACCELEROMETER_Z,TYPE_MAGNETIC_FIELD_X,TYPE_MAGNETIC_FIELD_Y," +
+                    "TYPE_MAGNETIC_FIELD_Z,TYPE_GYROSCOPE_X,TYPE_GYROSCOPE_Y,TYPE_GYROSCOPE_Z," +
+                    "TYPE_ROTATION_VECTOR_X,TYPE_ROTATION_VECTOR_Y,TYPE_ROTATION_VECTOR_Z," +
+                    "TYPE_LINEAR_ACCELERATION_X,TYPE_LINEAR_ACCELERATION_Y,TYPE_LINEAR_ACCELERATION_Z," +
+                    "TYPE_GRAVITY_X,TYPE_GRAVITY_Y,TYPE_GRAVITY_Z,position_X,position_Y,velocity_X,velocity_Y,pressure,size\n");
             bufferedWriter.flush();
         }
         catch(Exception e){
@@ -142,8 +174,12 @@ public class ALPActivity extends Activity {
     protected void onResume()
     {
         super.onResume();
-
-
+        mSensorManager.registerListener(this, mAccelerometer, mSensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mGravity, mSensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mGyroscope, mSensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mMagnetometer, mSensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mRotation, mSensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, myLinearAcc, mSensorManager.SENSOR_DELAY_NORMAL);
         updateFromPrefs();
     }
 
@@ -158,7 +194,7 @@ public class ALPActivity extends Activity {
     protected void onPause() {
 
         super.onPause();
-
+        mSensorManager.unregisterListener(this);
     }
 
 
@@ -300,4 +336,42 @@ public class ALPActivity extends Activity {
         mPatternView.setTactileFeedbackEnabled(enabled);
     }
 
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        if(sensorEvent.sensor.equals(mAccelerometer)){
+            accelerometer_x = sensorEvent.values[0];
+            accelerometer_y = sensorEvent.values[1];
+            accelerometer_z = sensorEvent.values[2];
+        }
+        if(sensorEvent.sensor.equals(mGravity)){
+            gravity_x = sensorEvent.values[0];
+            gravity_y = sensorEvent.values[1];
+            gravity_z = sensorEvent.values[2];
+        }
+        if(sensorEvent.sensor.equals(mGyroscope)){
+            gyroscope_x = sensorEvent.values[0];
+            gyroscope_y = sensorEvent.values[1];
+            gyroscope_z = sensorEvent.values[2];
+        }
+        if(sensorEvent.sensor.equals(mMagnetometer)){
+            magnetic_field_x = sensorEvent.values[0];
+            magnetic_field_y = sensorEvent.values[1];
+            magnetic_field_z = sensorEvent.values[2];
+        }
+        if(sensorEvent.sensor.equals(mRotation)){
+            rotation_vector_x = sensorEvent.values[0];
+            rotation_vector_y = sensorEvent.values[1];
+            rotation_vector_z = sensorEvent.values[2];
+        }
+        if(sensorEvent.sensor.equals(myLinearAcc)){
+            linear_acceleration_x = sensorEvent.values[0];
+            linear_acceleration_y = sensorEvent.values[1];
+            linear_acceleration_z = sensorEvent.values[2];
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+        // Do something if sensor accuracy changes
+    }
 }
