@@ -73,6 +73,7 @@ public class LockPatternView extends View
     protected List<Point> mPracticePattern;
     protected Set<Point> mPracticePool;
     protected ArrayList<String> motionData;
+    protected int mPracticeCounter;
 
     public LockPatternView(Context context, AttributeSet attrs)
     {
@@ -373,7 +374,7 @@ public class LockPatternView extends View
                     // pixels per 10 millisecond
                     mVelocityTracker.computeCurrentVelocity(10);
                     String row = "";
-                    row = row +System.currentTimeMillis()+",";
+                    row = row + new java.sql.Timestamp(System.currentTimeMillis())+",";
                     row = row +((ALPActivity)(this.getContext())).accelerometer_x+",";
                     row = row +((ALPActivity)(this.getContext())).accelerometer_y+",";
                     row = row +((ALPActivity)(this.getContext())).accelerometer_z+",";
@@ -392,12 +393,14 @@ public class LockPatternView extends View
                     row = row +((ALPActivity)(this.getContext())).gravity_x+",";
                     row = row +((ALPActivity)(this.getContext())).gravity_y+",";
                     row = row +((ALPActivity)(this.getContext())).gravity_z+",";
-                    row = row +event.getX()+",";
-                    row = row +event.getY()+",";
+                    row = row + event.getX()+",";
+                    row = row + event.getY()+",";
                     row = row + mVelocityTracker.getXVelocity()+",";
                     row = row + mVelocityTracker.getYVelocity()+",";
                     row = row +event.getPressure()+",";
-                    row = row +event.getSize();
+                    row = row +event.getSize() + ",";
+                    row = row + "\"" + mCurrentPattern.toString() + "\",";
+                    row = row + mPracticeCounter;
                     row = row +"\n";
                     motionData.add(row);
                 }
@@ -408,6 +411,7 @@ public class LockPatternView extends View
                 //also test for whether we should save the buffer to file.
                 if(testResult.equals("true")){
                     ((ALPActivity)(this.getContext())).saveMotionData(motionData);
+                    mPracticeCounter++;
                 }
                 break;
             default:
@@ -471,7 +475,7 @@ public class LockPatternView extends View
     {
         clearPattern(mCurrentPattern);
         loadPattern(pattern, mHighlightMode);
-
+        mPracticeCounter = 0;
         mCurrentPattern = pattern;
     }
     public List<Point> getPattern()
