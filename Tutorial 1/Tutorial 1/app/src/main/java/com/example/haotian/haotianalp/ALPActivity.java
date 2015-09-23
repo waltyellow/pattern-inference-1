@@ -114,7 +114,7 @@ public class ALPActivity extends Activity implements SensorEventListener{
         // create BufferedWriter
         try {
             bufferedWriter = new BufferedWriter(new FileWriter(file));
-            bufferedWriter.write("TimeStamp,TYPE_ACCELEROMETER_X,TYPE_ACCELEROMETER_Y," +
+            bufferedWriter.write("TYPE_ACCELEROMETER_X,TYPE_ACCELEROMETER_Y," +
                     "TYPE_ACCELEROMETER_Z,TYPE_MAGNETIC_FIELD_X,TYPE_MAGNETIC_FIELD_Y," +
                     "TYPE_MAGNETIC_FIELD_Z,TYPE_GYROSCOPE_X,TYPE_GYROSCOPE_Y,TYPE_GYROSCOPE_Z," +
                     "TYPE_ROTATION_VECTOR_X,TYPE_ROTATION_VECTOR_Y,TYPE_ROTATION_VECTOR_Z," +
@@ -174,6 +174,7 @@ public class ALPActivity extends Activity implements SensorEventListener{
     protected void onResume()
     {
         super.onResume();
+
         mSensorManager.registerListener(this, mAccelerometer, mSensorManager.SENSOR_DELAY_NORMAL);
         mSensorManager.registerListener(this, mGravity, mSensorManager.SENSOR_DELAY_NORMAL);
         mSensorManager.registerListener(this, mGyroscope, mSensorManager.SENSOR_DELAY_NORMAL);
@@ -198,8 +199,8 @@ public class ALPActivity extends Activity implements SensorEventListener{
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         try {
             bufferedWriter.close();
         }

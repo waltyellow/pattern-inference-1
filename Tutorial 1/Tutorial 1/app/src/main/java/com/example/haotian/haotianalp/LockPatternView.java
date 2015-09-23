@@ -374,7 +374,6 @@ public class LockPatternView extends View
                     // pixels per 10 millisecond
                     mVelocityTracker.computeCurrentVelocity(10);
                     String row = "";
-                    row = row + new java.sql.Timestamp(System.currentTimeMillis())+",";
                     row = row +((ALPActivity)(this.getContext())).accelerometer_x+",";
                     row = row +((ALPActivity)(this.getContext())).accelerometer_y+",";
                     row = row +((ALPActivity)(this.getContext())).accelerometer_z+",";
