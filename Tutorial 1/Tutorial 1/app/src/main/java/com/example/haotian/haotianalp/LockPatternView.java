@@ -398,7 +398,7 @@ public class LockPatternView extends View
                     row = row + mVelocityTracker.getYVelocity()+",";
                     row = row +event.getPressure()+",";
                     row = row +event.getSize() + ",";
-                    row = row + "\"" + mCurrentPattern.toString() + "\",";
+                   //  row = row + "\"" + mCurrentPattern.toString() + "\",";
                     row = row + mPracticeCounter;
                     row = row +"\n";
                     motionData.add(row);
