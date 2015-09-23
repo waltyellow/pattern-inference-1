@@ -4,6 +4,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Setting</string>
     <string name="generate_button_label">Generate Pattern Randomly</string>
+    <string name="convert_button_label">Save and Convert</string>
     <string name="practice">Practice</string>
     <string name="Designer">Personal Pattern Designer</string>
     <string name="start_log_data">Start Logging</string>

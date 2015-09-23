@@ -38,11 +38,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import weka.core.Instances;
+import weka.core.converters.ArffSaver;
+import weka.core.converters.CSVLoader;
+
 
 public class ALPActivity extends Activity implements SensorEventListener{
     protected LockPatternView mPatternView;
     protected PatternGenerator mGenerator;
     protected Button mGenerateButton;
+    protected Button mSaveAndConvertButton;
     protected Button mDesigner;
     protected ToggleButton mPracticeToggle;
     private List<Point> mEasterEggPattern;
@@ -79,7 +84,10 @@ public class ALPActivity extends Activity implements SensorEventListener{
     public List<Sensor> deviceSensors;
     private  Sensor mAccelerometer, mMagnetometer, mGyroscope, mRotation, mGravity, myLinearAcc;
 
+    protected String root;
+
     private File file;
+    private File arffFile;
     public static String[] mLine;
     public BufferedWriter bufferedWriter;
     private VelocityTracker mVelocityTracker = null;
@@ -105,10 +113,11 @@ public class ALPActivity extends Activity implements SensorEventListener{
         setContentView(R.layout.activity_alp);
         mPatternView = (LockPatternView) findViewById(R.id.pattern_view);
         mGenerateButton = (Button) findViewById(R.id.generate_button);
+        mSaveAndConvertButton = (Button) findViewById(R.id.save_and_convert);
         mPracticeToggle = (ToggleButton) findViewById(R.id.practice_toggle);
 
         // create file for which to save motion data
-        String root = Environment.getExternalStorageDirectory().toString();
+        root = Environment.getExternalStorageDirectory().toString();
         file = new File(root + "/DCIM", "motiondata" + System.currentTimeMillis() + ".csv");
 
         // create BufferedWriter
@@ -151,6 +160,28 @@ public class ALPActivity extends Activity implements SensorEventListener{
                             },
                             (d = (int)(d* 1.2)));}
                 return true;
+            }
+        });
+
+        mSaveAndConvertButton.setOnClickListener(new Button.OnClickListener(){
+
+            @Override
+            public void onClick(View view){
+                try {
+                    bufferedWriter.close();
+                }
+                catch(Exception e){
+                    System.out.println("close error");
+                }
+
+                arffFile = new File(root + "/DCIM", file.getName() + ".arff");
+
+                try{
+                    csvToArffConvert(file, arffFile);
+                }
+                catch (Exception e){
+                    System.out.println("Convert failed.");
+                }
             }
         });
 
@@ -224,6 +255,22 @@ public class ALPActivity extends Activity implements SensorEventListener{
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    // csv to arff conversion method
+    private void csvToArffConvert(File csv, File arff) throws Exception {
+
+        // load CSV
+        CSVLoader loader = new CSVLoader();
+        loader.setSource(csv);
+        Instances data = loader.getDataSet();
+
+        // save ARFF
+        ArffSaver saver = new ArffSaver();
+        saver.setInstances(data);
+        saver.setFile(arff);
+        saver.setDestination(arff);
+        saver.writeBatch();
     }
 
     // test file saving method
